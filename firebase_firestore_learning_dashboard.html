@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Firestore Master Cheat-Sheet & Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fffbebe',
+                            100: '#fef3c7',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            900: '#78350f',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for code blocks */
+        pre::-webkit-scrollbar {
+            height: 6px;
+        }
+        pre::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<!-- Chosen Palette: Slate & Amber Firebase Theme -->
+<!-- Application Structure Plan: Tabbed interactive learning dashboard with thematic sections: Firebase Setup, CRUD Matrix, Dynamic Code Snippets with explanation, Interactive Concept Selector, and Practice Quiz. Designed to make the learning summary actionable and easily reviewable. -->
+<!-- Visualization & Content Choices: Used Tailwind cards, comparison tables, interactive tabs, interactive code toggle views, and metric badges instead of raw text. NO SVG/Mermaid used. Canvas/HTML used for visual elements. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-amber-500/20">
+                    🔥
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-white leading-tight">ফায়ারবেস ফায়ারস্টোর মাস্টার সামারি</h1>
+                    <p class="text-xs text-amber-400 font-medium">Hands-on Learning Summary Dashboard</p>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-2">
+                <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    ৭টি মূল কনসেপ্ট সম্পন্ন
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Intro Banner -->
+        <section class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <div class="relative z-10 max-w-3xl space-y-3">
+                <span class="inline-block px-3 py-1 bg-amber-500/10 text-amber-400 text-xs font-semibold rounded-lg border border-amber-500/20">
+                    📚 এ পর্যন্ত যা যা শিখেছেন
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                    ফায়ারবেস ডাটাবেস হ্যান্ডলিংয়ের সম্পূর্ণ সমাহার
+                </h2>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    আমরা একদম শুরু থেকে ফায়ারবেস ইম্পোর্ট, রিয়েল-টাইম ডাটা লিসেনিং, অটো ও কাস্টম আইডিতে ডাটা সেভ, আপডেট, ডিলিট এবং ফিল্টারিং পর্যন্ত প্র্যাকটিক্যালি শিখেছি।
+                </p>
+            </div>
+        </section>
+
+        <!-- Dynamic Navigation Tabs -->
+        <div class="flex flex-wrap border-b border-slate-800 gap-2 text-sm font-medium">
+            <button onclick="switchTab('setup')" id="tab-setup" class="tab-btn py-2.5 px-4 rounded-t-xl transition duration-200 border-b-2 border-amber-500 text-amber-400 bg-slate-900">
+                <i class="fa-solid fa-plug mr-2"></i>১. কানেকশন ও সেটআপ
+            </button>
+            <button onclick="switchTab('crud')" id="tab-crud" class="tab-btn py-2.5 px-4 rounded-t-xl transition duration-200 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50">
+                <i class="fa-solid fa-database mr-2"></i>২. CRUD অপারেশনস
+            </button>
+            <button onclick="switchTab('query')" id="tab-query" class="tab-btn py-2.5 px-4 rounded-t-xl transition duration-200 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50">
+                <i class="fa-solid fa-filter mr-2"></i>৩. ডাটা ফিল্টারিং (Query)
+            </button>
+            <button onclick="switchTab('comparison')" id="tab-comparison" class="tab-btn py-2.5 px-4 rounded-t-xl transition duration-200 border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50">
+                <i class="fa-solid fa-scale-balanced mr-2"></i>৪. ফাংশন তুলনা (Comparison)
+            </button>
+        </div>
+
+        <!-- TAB 1: SETUP & CONFIG -->
+        <div id="content-setup" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-3">
+                    <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center font-bold text-lg">
+                        1
+                    </div>
+                    <h3 class="font-bold text-white text-base">type="module" ব্যবহার</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        HTML-এ <code>&lt;script type="module"&gt;</code> ব্যবহার করা হয় যেন ES6 Module অনুযায়ী সরাসরি CDN থেকে ফায়ারবেসের মডিউলগুলো ইমপোর্ট করা যায়।
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-lg">
+                        2
+                    </div>
+                    <h3 class="font-bold text-white text-base">initializeApp(firebaseConfig)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        আপনার প্রজেক্টের নিদির্ষ্ট <code>apiKey</code>, <code>projectId</code> ইত্যাদি ক্রেডেনশিয়াল দিয়ে অ্যাপকে ক্লাউড সার্ভারের সাথে যুক্ত করা হয়।
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-lg">
+                        3
+                    </div>
+                    <h3 class="font-bold text-white text-base">getFirestore(app)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        ফায়ারস্টোর ডাটাবেসের একটি ইন্সট্যান্স বা অবজেক্ট (<code>db</code>) তৈরি করে, যা দিয়ে কালেকশন ও ডকুমেন্টে অপারেশন চালানো হয়।
+                    </p>
+                </div>
+            </div>
+
+            <!-- Code Example -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <span class="text-xs font-mono text-amber-400 font-semibold">JS Setup Snippet</span>
+                    <span class="text-xs text-slate-500">Modular SDK v10</span>
+                </div>
+                <pre class="bg-slate-950 p-4 rounded-xl text-xs font-mono text-emerald-400 overflow-x-auto leading-relaxed"><code>import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    projectId: "your-project-id"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);</code></pre>
+            </div>
+        </div>
+
+        <!-- TAB 2: CRUD OPERATIONS -->
+        <div id="content-crud" class="tab-content hidden space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- addDoc -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-amber-400 text-lg flex items-center gap-2">
+                            <span>addDoc()</span>
+                        </h3>
+                        <span class="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-1 rounded-md border border-amber-500/20">Auto ID Create</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        ফায়ারবেস নিজে থেকে একটি ২০-ক্যারাক্টারের ইউনিক র‍্যান্ডম আইডি তৈরি করে নতুন ডাটা সেভ করে।
+                    </p>
+                    <pre class="bg-slate-950 p-3.5 rounded-xl text-xs font-mono text-sky-300 overflow-x-auto"><code>await addDoc(collection(db, "students"), {
+    name: "রকিব",
+    topic: "JS",
+    createdAt: serverTimestamp()
+});</code></pre>
+                </div>
+
+                <!-- onSnapshot -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-emerald-400 text-lg flex items-center gap-2">
+                            <span>onSnapshot()</span>
+                        </h3>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2 py-1 rounded-md border border-emerald-500/20">Realtime Listener</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        ডাটাবেসে কোনো ডাটা পরিবর্তন, যোগ বা ডিলিট হলে পেজ রিফ্রেশ ছাড়াই লাইভ ফ্রন্টএন্ড আপডেট হয়।
+                    </p>
+                    <pre class="bg-slate-950 p-3.5 rounded-xl text-xs font-mono text-emerald-300 overflow-x-auto"><code>onSnapshot(collection(db, "students"), (snap) => {
+    snap.docs.forEach(docSnap => {
+        console.log(docSnap.id, docSnap.data());
+    });
+});</code></pre>
+                </div>
+
+                <!-- setDoc -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sky-400 text-lg flex items-center gap-2">
+                            <span>setDoc()</span>
+                        </h3>
+                        <span class="text-[10px] bg-sky-500/10 text-sky-300 px-2 py-1 rounded-md border border-sky-500/20">Custom ID / Overwrite</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        ইউজার নিজের পছন্দমতো নির্দিষ্ট আইডি (যেমন: <code>student_101</code>) ব্যবহার করে ডাটা সেভ করতে পারে।
+                    </p>
+                    <pre class="bg-slate-950 p-3.5 rounded-xl text-xs font-mono text-sky-300 overflow-x-auto"><code>await setDoc(doc(db, "students", "student_101"), {
+    name: "সাকিব",
+    topic: "React"
+});</code></pre>
+                </div>
+
+                <!-- updateDoc -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-purple-400 text-lg flex items-center gap-2">
+                            <span>updateDoc()</span>
+                        </h3>
+                        <span class="text-[10px] bg-purple-500/10 text-purple-300 px-2 py-1 rounded-md border border-purple-500/20">Partial Field Update</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        ডকুমেন্টের বাকি ফিল্ড অক্ষত রেখে কেবল নির্দিষ্ট একটি বা একাধিক ফিল্ডের মান পরিবর্তন করে।
+                    </p>
+                    <pre class="bg-slate-950 p-3.5 rounded-xl text-xs font-mono text-purple-300 overflow-x-auto"><code>await updateDoc(doc(db, "students", "student_101"), {
+    topic: "Next.js" // শুধু topic ফিল্ড পরিবর্তন হবে
+});</code></pre>
+                </div>
+
+                <!-- deleteDoc -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 md:col-span-2">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-rose-400 text-lg flex items-center gap-2">
+                            <span>deleteDoc()</span>
+                        </h3>
+                        <span class="text-[10px] bg-rose-500/10 text-rose-300 px-2 py-1 rounded-md border border-rose-500/20">Delete Document</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        নির্দিষ্ট আইডি (<code>docId</code>) দিয়ে ডাটাবেস থেকে কোনো পুরো ডকুমেন্ট মুছে ফেলে।
+                    </p>
+                    <pre class="bg-slate-950 p-3.5 rounded-xl text-xs font-mono text-rose-300 overflow-x-auto"><code>await deleteDoc(doc(db, "students", "DOCUMENT_ID"));</code></pre>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 3: QUERY & FILTERING -->
+        <div id="content-query" class="tab-content hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-2">query() এবং where() দিয়ে ডাটা ফিল্টারিং</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        ফায়ারস্টোরে নির্দিষ্ট শর্ত দিয়ে ডাটা ফিল্টার করার জন্য <code>query()</code> এবং <code>where()</code> ব্যবহার করা হয়।
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-semibold text-amber-400">ফিল্টারিং কোড উদাহরণ:</h4>
+                        <pre class="bg-slate-950 p-4 rounded-xl text-xs font-mono text-amber-300 overflow-x-auto"><code>import { collection, query, where, onSnapshot } from "...";
+
+// JS বিষয়ের ডাটা ফিল্টার করার কোয়েরি
+const q = query(
+    collection(db, "students"), 
+    where("topic", "==", "JS")
+);
+
+onSnapshot(q, (snapshot) => {
+    // শুধুমাত্র JS বিষয়ের স্টুডেন্টদের ডাটা আসবে
+});</code></pre>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-semibold text-sky-400">where()-এ ব্যবহৃত সাধারণ অপারেটরসমূহ:</h4>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-2">
+                            <div class="flex justify-between border-b border-slate-800 pb-1">
+                                <code class="text-amber-400">"=="</code>
+                                <span class="text-slate-400">মানের সমতা পরীক্ষা করতে (Equal)</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-1">
+                                <code class="text-amber-400 font-mono">"!="</code>
+                                <span class="text-slate-400">সমান নয় এমন ডাটা দেখতে</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-1">
+                                <code class="text-amber-400 font-mono">">" / ">="</code>
+                                <span class="text-slate-400">সংখ্যার চেয়ে বড় বা সমান</span>
+                            </div>
+                            <div class="flex justify-between border-b border-slate-800 pb-1">
+                                <code class="text-amber-400 font-mono">"array-contains"</code>
+                                <span class="text-slate-400">অ্যারের ভেতরে নির্দিষ্ট মান খুঁজতে</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: COMPARISON MATRIX -->
+        <div id="content-comparison" class="tab-content hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <h3 class="text-xl font-bold text-white">ফাংশন সমূহের তুলনামূলক ম্যাট্রিক্স</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/50">
+                                <th class="p-3">ফাংশন</th>
+                                <th class="p-3">ডকুমেন্ট আইডি</th>
+                                <th class="p-3">মূল কাজ</th>
+                                <th class="p-3">ব্যবহারের সঠিক ক্ষেত্র</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td class="p-3 font-mono text-amber-400 font-bold">addDoc()</td>
+                                <td class="p-3">Auto Generated (Random)</td>
+                                <td class="p-3">নতুন ডকুমেন্ট তৈরি করা</td>
+                                <td class="p-3">যখন নির্দিষ্ট আইডির প্রয়োজন নেই (যেমন: পোস্ট, টিউশন নোটিশ)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-mono text-sky-400 font-bold">setDoc()</td>
+                                <td class="p-3">Custom (User Provided)</td>
+                                <td class="p-3">ডকুমেন্ট তৈরি বা সম্পূর্ণ পরিবর্তন</td>
+                                <td class="p-3">নির্দিষ্ট আইডি দিয়ে ডাটা রাখার জন্য (যেমন: রোল, ইউজার আইডি)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-mono text-purple-400 font-bold">updateDoc()</td>
+                                <td class="p-3">Existing Document ID</td>
+                                <td class="p-3">নির্দিষ্ট ফিল্ড আপডেট করা</td>
+                                <td class="p-3">বাকি তথ্য ঠিক রেখে শুধু নাম/ফোন নম্বর বদলানোর ক্ষেত্রে</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-mono text-rose-400 font-bold">deleteDoc()</td>
+                                <td class="p-3">Existing Document ID</td>
+                                <td class="p-3">ডকুমেন্ট পুরোপুরি মুছে ফেলা</td>
+                                <td class="p-3">ডাটাবেস থেকে কোনো তথ্য অপসারণ করার জন্য</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Quick Reference Tool -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                <span class="text-amber-400">⚡</span> কুইক ইন্টারঅ্যাক্টিভ রেফারেন্স জেনারেটর
+            </h3>
+            <p class="text-xs text-slate-400">আপনি কী করতে চান নির্বাচন করুন, নিচে সংগে সংগে সঠিক ফায়ারস্টোর ফাংশনের নাম ও কোড দেখাবে:</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button onclick="showInteractiveSnippet('auto-add')" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-left border border-slate-700 transition">
+                    ➕ অটো আইডি দিয়ে ডাটা সেভ
+                </button>
+                <button onclick="showInteractiveSnippet('custom-set')" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-left border border-slate-700 transition">
+                    🏷️ কাস্টম আইডি দিয়ে ডাটা সেভ
+                </button>
+                <button onclick="showInteractiveSnippet('field-update')" class="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-semibold text-left border border-slate-700 transition">
+                    ✏️ শুধু ফোন/বিষয় আপডেট
+                </button>
+            </div>
+
+            <div id="interactiveOutput" class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-amber-300">
+                // উপরের যেকোনো একটি বাটনে চাপ দিন...
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JS Logic for Tabs and Interactive Snippet Generator -->
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab content
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.add('hidden'));
+
+            // Reset tab button styles
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(b => {
+                b.classList.remove('border-amber-500', 'text-amber-400', 'bg-slate-900');
+                b.classList.add('border-transparent', 'text-slate-400');
+            });
+
+            // Show target tab content
+            document.getElementById(`content-${tabName}`).classList.remove('hidden');
+
+            // Active button style
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('border-amber-500', 'text-amber-400', 'bg-slate-900');
+        }
+
+        function showInteractiveSnippet(type) {
+            const output = document.getElementById('interactiveOutput');
+            if (type === 'auto-add') {
+                output.innerHTML = `<span class="text-slate-500">// addDoc ব্যবহার করে অটো আইডি তৈরি:</span>\nawait addDoc(collection(db, "students"), { name: "সাকিব", topic: "JS" });`;
+            } else if (type === 'custom-set') {
+                output.innerHTML = `<span class="text-slate-500">// setDoc ব্যবহার করে কাস্টম রোল আইডিতে সেভ:</span>\nawait setDoc(doc(db, "students", "roll_2024_01"), { name: "সাকিব", topic: "React" });`;
+            } else if (type === 'field-update') {
+                output.innerHTML = `<span class="text-slate-500">// updateDoc ব্যবহার করে শুধু বিষয় পরিবর্তন:</span>\nawait updateDoc(doc(db, "students", "doc_id_here"), { topic: "Next.js" });`;
+            }
+        }
+    </script>
+</body>
+</html>
